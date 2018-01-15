@@ -1,0 +1,9 @@
+---
+applications:
+- name: webcal
+  memory: 256M
+  instances: 2
+  host: webcal
+  domain: eu-gb.mybluemix.net
+  path: .
+  command: python webcal_parse.py
