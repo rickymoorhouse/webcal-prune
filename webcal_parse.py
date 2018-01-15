@@ -7,10 +7,13 @@ from urllib2 import urlopen
 
 class CalendarPruner(object):
     @cherrypy.expose
-    def index(self, calendar=None, keyword=None, find="", replacement=None):
+    def index(self, calendar=None, keyword=None, find="", replacement=None, t=0):
         """ Retrieve calendar, reduce to events matching keyword and apply find/replace """
         if calendar:
-            cherrypy.response.headers['Content-Type'] = 'text/calendar'
+            if t==1:
+                cherrypy.response.headers['Content-Type'] = 'text/plain'
+            else:
+                cherrypy.response.headers['Content-Type'] = 'text/calendar'
             new_cal = Calendar()
             calendar = calendar.replace('webcal','http')
             c = Calendar(urlopen(calendar).read().decode('iso-8859-1'))
@@ -29,7 +32,7 @@ class CalendarPruner(object):
 Required parameters: calendar (ics url) and keyword (events to find)
 <h2>Parameters</h2>
 <form method="GET">
-<dl>
+<input type="hidden" name="t" value="1" /><dl>
 <dt>calendar</dt>
 <dd>webcal url to calendar</dd>
 <dd><input type="text" name="calendar" /></dd>
