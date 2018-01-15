@@ -10,10 +10,10 @@ class CalendarPruner(object):
     def index(self, calendar=None, keyword=None, find="", replacement=None, t=0):
         """ Retrieve calendar, reduce to events matching keyword and apply find/replace """
         if calendar:
-            if t==1:
-                cherrypy.response.headers['Content-Type'] = 'text/plain'
-            else:
+            if t == 0:
                 cherrypy.response.headers['Content-Type'] = 'text/calendar'
+            else:
+                cherrypy.response.headers['Content-Type'] = 'text/plain'
             new_cal = Calendar()
             calendar = calendar.replace('webcal','http')
             c = Calendar(urlopen(calendar).read().decode('iso-8859-1'))
