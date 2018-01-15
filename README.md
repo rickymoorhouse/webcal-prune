@@ -11,6 +11,6 @@ Very simple Python web service that loads a specified webcal url and returns a s
 
 3. Decide if you want to do any further substitution on the event name (e.g. replace On Call with your name)
 
-3. Build your url as follows:
+3. Build your url as follows (or by using the (form)[https://webcal.eu-gb.mybluemix.net/]):
 
-    https://webcal.eu-gb.mybluemix.net/?webcal=<url>&keyword=Primary&find=On+Call&replacement=Ricky
+```https://webcal.eu-gb.mybluemix.net/?webcal=*url*&keyword=Primary&find=On+Call&replacement=Ricky```
