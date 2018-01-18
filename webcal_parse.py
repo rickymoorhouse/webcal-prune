@@ -7,21 +7,29 @@ from urllib2 import urlopen
 
 class CalendarPruner(object):
     @cherrypy.expose
-    def index(self, calendar=None, keyword=None, find="", replacement=None, t=0):
-        """ Retrieve calendar, reduce to events matching keyword and apply find/replace """
+    def index(self, calendar=None, filter=None, find="", replacement=None, t=0):
+        """ Retrieve calendar, reduce to events matching filter and apply find/replace """
         if calendar:
             if t == 0:
                 cherrypy.response.headers['Content-Type'] = 'text/calendar'
             else:
                 cherrypy.response.headers['Content-Type'] = 'text/plain'
+            # Create new calendar to copy events into
             new_cal = Calendar()
             calendar = calendar.replace('webcal','http')
             c = Calendar(urlopen(calendar).read().decode('iso-8859-1'))
+
+            if "," in filter:
+                keywords = filter.split(',')
+            else:
+                keywords = [filter]    
+            print keywords
             for event in c.events:
-                if keyword in event.name:
-                    if replacement:
-                        event.name = event.name.replace(find, replacement)
-                    new_cal.events.append(event)
+                for keyword in keywords:
+                    if keyword.lower() in event.name.lower():
+                        if replacement:
+                            event.name = event.name.replace(find, replacement)
+                        new_cal.events.append(event)
             return new_cal
         else:
             return """
@@ -29,16 +37,16 @@ class CalendarPruner(object):
 <html>
 <body>
 <h1>Webcal pruner</h1>
-Required parameters: calendar (ics url) and keyword (events to find)
+Required parameters: calendar (ics url) and filter (events to find)
 <h2>Parameters</h2>
 <form method="GET">
 <input type="hidden" name="t" value="1" /><dl>
 <dt>calendar</dt>
 <dd>webcal url to calendar</dd>
 <dd><input type="text" name="calendar" /></dd>
-<dt>keyword</dt>
+<dt>filter</dt>
 <dd>Filter to events containing this in the name</dd>
-<dd><input type="text" name="keyword" /></dd>
+<dd><input type="text" name="filter" /></dd>
 <dt>find (optional)</dt>
 <dd>Find this string in event names and replace with <em>replacement</em></dd>
 <dd><input type="text" name="find" /></dd>
